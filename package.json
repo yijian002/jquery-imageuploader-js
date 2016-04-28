@@ -1,0 +1,11 @@
+{
+  "name": "components_jquery-plugin-uploader",
+  "version": "1.0.0",
+  "description": "A JQuery plugin for a file uploader",
+  "main": "js/jquery.uploader.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Rob Copeland",
+  "license": "MIT"
+}
