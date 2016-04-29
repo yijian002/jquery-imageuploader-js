@@ -4,6 +4,8 @@
   "description": "A JQuery plugin for a file uploader",
   "main": "js/jquery.uploader.js",
   "scripts": {
+    "js": "node_modules/.bin/uglifyjs js/jquery.uploader.js -o jquery.uploader.min.js",
+    "scss": "",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Rob Copeland",

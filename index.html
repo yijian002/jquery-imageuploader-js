@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Uploader Jquery plugin</title>
+</head>
+<body>
+    <section role="main">
+        <h1>Uploader</h1>
+        <div class="js-uploader-box">
+            <form action="your/nonjs/fallback/" method="POST">
+                <label for="fileinput">Select Files</label>
+                <input id="fileinput" type="file" multiple>
+                <input type="submit" value="Upload Selected Files">
+            </form>
+        </div>
+    </section>
+    <script src="https://code.jquery.com/jquery-2.2.3.min.js"
+            integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo="
+            crossorigin="anonymous"></script>
+    <script src="jquery.uploader.min.js"></script>
+    <script>
+        var options = {};
+        $('.js-uploader-box').uploader(options);
+    </script>
+</body>
+</html>

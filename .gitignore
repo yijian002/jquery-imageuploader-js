@@ -1,2 +1,5 @@
 .idea/
 .DS_Store/
+main.css
+jquery.uploader.min.js
+node_modules/
