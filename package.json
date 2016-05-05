@@ -4,10 +4,20 @@
   "description": "A JQuery plugin for a file uploader",
   "main": "js/jquery.uploader.js",
   "scripts": {
-    "js": "node_modules/.bin/uglifyjs js/jquery.uploader.js -o jquery.uploader.min.js",
+    "js": "cp js/jquery.uploader.js jquery.uploader.min.js",
+    "js-prod": "node_modules/.bin/uglifyjs js/jquery.uploader.js -o jquery.uploader.min.js",
     "scss": "",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node_modules/.bin/mocha tests/tests.js --reporter nyan",
+    "js:watch": "node_modules/.bin/watch 'npm run js' js",
+    "start": "browser-sync start --server"
   },
   "author": "Rob Copeland",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "jsdom": "^8.5.0",
+    "jsdomify": "^2.1.0",
+    "mocha": "^2.4.5",
+    "should": "^8.3.1",
+    "watch": "^0.18.0"
+  }
 }

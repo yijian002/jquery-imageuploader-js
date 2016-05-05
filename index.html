@@ -10,7 +10,7 @@
         <div class="js-uploader-box">
             <form action="your/nonjs/fallback/" method="POST">
                 <label for="fileinput">Select Files</label>
-                <input id="fileinput" type="file" multiple>
+                <input id="fileinput" type="file" multiple value="Select Files">
                 <input type="submit" value="Upload Selected Files">
             </form>
         </div>
@@ -20,8 +20,10 @@
             crossorigin="anonymous"></script>
     <script src="jquery.uploader.min.js"></script>
     <script>
-        var options = {};
-        $('.js-uploader-box').uploader(options);
+        (function(){
+            var options = {};
+            $('.js-uploader-box').uploader(options);
+        }());
     </script>
 </body>
 </html>
