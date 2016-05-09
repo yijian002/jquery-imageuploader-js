@@ -1,13 +1,18 @@
-/* global describe it */
+/* global describe it File */
 var should = require('should');
 var jsdom = require('jsdom');
 var fs = require('fs');
 
 var htmlSource = fs.readFileSync('./tests/html-stub.html', 'utf8');
-
 var document = jsdom.jsdom(htmlSource);
 var window = document.defaultView;
+window.addEventListener('error', function (event) {
+    console.error('script error!!', event.error);
+});
+
 require('jquery')(window);
+
+window.console = console;
 
 var scriptEl = window.document.createElement('script');
 scriptEl.innerHTML = fs.readFileSync('./js/jquery.uploader.js', 'utf8');
@@ -29,7 +34,7 @@ function propagateToGlobal (window) {
 describe('Setup', function () {
     describe('#clearout', function () {
         // set up the uploader
-        window.$('.js-uploader-box').uploader();
+        window.$('.js-uploader-box').uploader({testMode: true});
         it('should have the required container still', function () {
             should.equal(1, window.$('.js-uploader-box').size());
         });
@@ -65,38 +70,102 @@ describe('Setup', function () {
 
 describe('Drag and Drop', function () {
     describe('#drop', function () {
-        it('should add a nice list item if a good file is dropped', function () {});
-        it('should add a naughty list item if a bad file is dropped', function () {});
-        it('should add a nice list item for each, if a set of good files is dropped', function () {});
-        it('should add a naughty list item for each,  if a bad files is dropped', function () {});
-    });
-});
-
-describe('File Select', function () {
-    describe('#selectbutton', function () {
-        it('should add a nice list item if a good file is selected', function () {});
-        it('should add a naughty list item if a bad file is selected', function () {});
-        it('should add a nice list item for each, if a set of good files is selected', function () {});
-        it('should add a naughty list item for each,  if a bad files is selected', function () {});
+        it('should add a nice list item if a good file is dropped', function () {
+            // 'drop' a good file
+            var dropEventOneFile = window.$.Event('uploaderTestEvent');
+            dropEventOneFile.functionName = 'selectFilesHandler';
+            dropEventOneFile.target = {};
+            dropEventOneFile.target.files = [new File([], 'test.jpg', {})];
+            window.$('body').trigger(dropEventOneFile);
+            should.equal(1, window.$('.js-uploader__nice-list').children().size());
+        });
+        it('should add a naughty list item if a bad file is dropped', function () {
+            // 'drop' a bad file
+            var dropEventOneFile = window.$.Event('uploaderTestEvent');
+            dropEventOneFile.functionName = 'selectFilesHandler';
+            dropEventOneFile.target = {};
+            dropEventOneFile.target.files = [new File([], 'test.csv', {})];
+            window.$('body').trigger(dropEventOneFile);
+            should.equal(1, window.$('.js-uploader__naughty-list').children().size());
+        });
+        it('should add a nice list item for each, if a set of good files is dropped', function () {
+            window.$('.js-uploader__nice-list').empty();
+            var dropEventManyGoodFiles = window.$.Event('uploaderTestEvent');
+            dropEventManyGoodFiles.functionName = 'selectFilesHandler';
+            dropEventManyGoodFiles.target = {};
+            dropEventManyGoodFiles.target.files = [
+                new File([], 'test.jpg', {}),
+                new File([], 'test.jpg', {}),
+                new File([], 'test.jpg', {}),
+                new File([], 'test.jpg', {}),
+                new File([], 'test.jpg', {})
+            ];
+            window.$('body').trigger(dropEventManyGoodFiles);
+            should.equal(5, window.$('.js-uploader__nice-list').children().size());
+        });
+        it('should add a naughty list item for each,  if a set of bad files is dropped', function () {
+            window.$('.js-uploader__naughty-list').empty();
+            var dropEventManyBadFiles = window.$.Event('uploaderTestEvent');
+            dropEventManyBadFiles.functionName = 'selectFilesHandler';
+            dropEventManyBadFiles.target = {};
+            dropEventManyBadFiles.target.files = [
+                new File([], 'test.csv', {}),
+                new File([], 'test.csv', {}),
+                new File([], 'test.csv', {}),
+                new File([], 'test.csv', {}),
+                new File([], 'test.csv', {})
+            ];
+            window.$('body').trigger(dropEventManyBadFiles);
+            should.equal(5, window.$('.js-uploader__naughty-list').children().size());
+        });
+        it('should add a naughty list item for each bad one and a nice for each good one,  if a set of bad and good files is dropped', function () {
+            window.$('.js-uploader__naughty-list').empty();
+            window.$('.js-uploader__nice-list').empty();
+            var dropEventManyFiles = window.$.Event('uploaderTestEvent');
+            dropEventManyFiles.functionName = 'selectFilesHandler';
+            dropEventManyFiles.target = {};
+            dropEventManyFiles.target.files = [
+                new File([], 'test.csv', {}),
+                new File([], 'test.jpg', {}),
+                new File([], 'test.csv', {}),
+                new File([], 'test.jpg', {}),
+                new File([], 'test.jpg', {})
+            ];
+            window.$('body').trigger(dropEventManyFiles);
+            should.equal(3, window.$('.js-uploader__nice-list').children().size());
+            should.equal(2, window.$('.js-uploader__naughty-list').children().size());
+        });
     });
 });
 
 describe('Usage Bar', function () {
     describe('#usagebar', function () {
-        it('should start in its zero state', function () {});
-        it('should acurately show the percentage of limit used (rounded)', function () {});
-        it('should acurately show the size of files selected', function () {});
-        it('should have the overLimit class if more than the limit is selected', function () {});
-        it('should remove the overLimit class if it was over the limit and then enough files are removed to go below it', function () {});
+        it('should start in its zero state', function () {
+            should.equal('Using 0% (0 Bytes) of 50MB', window.$('.js-uploader__usage-bar-container').text());
+        });
+        it('should acurately show the percentage of limit used (rounded)', function () {
+            var dropEventManyFiles = window.$.Event('uploaderTestEvent');
+            dropEventManyFiles.functionName = 'selectFilesHandler';
+            dropEventManyFiles.target = {};
+            var file = new File([], 'test.jpg', {});
+            dropEventManyFiles.target.files = [file];
+            window.$('body').trigger(dropEventManyFiles);
+            // console.log(window.$('.js-uploader__usage-bar-container').text());
+        });
+        // it('should acurately show the size of files selected', function () {});
+        // it('should have the overLimit class if more than the limit is selected', function () {});
+        // it('should remove the overLimit class if it was over the limit and then enough files are removed to go below it', function () {});
     });
 });
-
-describe('Upload Submit', function () {
-    describe('#uploadsubmit', function () {
-        it('should make an ajax request with the files as formdata', function () {});
-        it('should add a spinner on submit', function () {});
-        it('should display an error if submitted with no files selected', function () {});
-        it('should not allow submit if isUploading state is active', function () {});
-        it('should not allow removing items from the nice list if isUploading state is active', function () {});
-    });
-});
+// should test that a nice item is built properly
+// should test that a naughty item is built properly
+//
+// describe('Upload Submit', function () {
+//     describe('#uploadsubmit', function () {
+//         it('should make an ajax request with the files as formdata', function () {});
+//         it('should add a spinner on submit', function () {});
+//         it('should display an error if submitted with no files selected', function () {});
+//         it('should not allow submit if isUploading state is active', function () {});
+//         it('should not allow removing items from the nice list if isUploading state is active', function () {});
+//     });
+// });

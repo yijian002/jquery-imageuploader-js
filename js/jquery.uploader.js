@@ -1,6 +1,6 @@
 /* global jQuery FileReader */
 (function ($) {
-    $.fn.uploader = function (options) {
+    $.fn.uploader = function (options, testMode) {
         var $uploaderBox = this;
 
         options = $.extend({
@@ -10,7 +10,8 @@
             dropZone: $('body'),
             fileTypeWhiteList: ['jpg', 'png', 'jpeg', 'gif'],
             maxUploadLimit: 50,
-            badFileTypeMessage: 'We\'re unable to process this file type.'
+            badFileTypeMessage: 'We\'re unable to process this file type.',
+            testMode: false
         }, options);
 
         var state = {
@@ -33,6 +34,9 @@
             niceList: $('<ul class="js-uploader__nice-list"></ul>'),
             naughtyList: $('<ul class="js-uploader__naughty-list"></ul>')
         };
+
+        // set it all up
+        init();
 
         function init () {
             // empty out whatever is in there
@@ -78,6 +82,29 @@
 
             // render the initial usage bar
             renderUsageBar();
+
+            // expose handlers for testing
+            if (options.testMode) {
+                options.dropZone.on('uploaderTestEvent', function (e) {
+                    switch (e.functionName) {
+                    case 'selectFilesHandler':
+                        // console.log('testing selectFilesHandler');
+                        selectFilesHandler(e);
+                        break;
+                    case 'uploadSubmitHandler':
+                        // console.log('testing uploadSubmitHandler');
+                        uploadSubmitHandler(e);
+                        break;
+                    case 'removeItemHandler':
+                        // console.log('testing removeItemHandler');
+                        removeItemHandler(e);
+                        break;
+                    default:
+                        // console.log('no function specified');
+                        break;
+                    }
+                });
+            }
         }
 
         function addNiceItem (file) {
@@ -251,7 +278,6 @@
             }
         }
 
-        init();
         return this;
     };
 }(jQuery));
