@@ -1,4 +1,4 @@
-/* global jQuery FileReader */
+/* global jQuery FormData FileReader */
 (function ($) {
     $.fn.uploader = function (options, testMode) {
         var $uploaderBox = this;
@@ -11,6 +11,8 @@
             fileTypeWhiteList: ['jpg', 'png', 'jpeg', 'gif'],
             maxUploadLimit: 50,
             badFileTypeMessage: 'We\'re unable to process this file type.',
+            noFilesSelectedError: 'Select some files.',
+            ajaxUrl: '/ajax/upload',
             testMode: false
         }, options);
 
@@ -88,19 +90,12 @@
                 options.dropZone.on('uploaderTestEvent', function (e) {
                     switch (e.functionName) {
                     case 'selectFilesHandler':
-                        // console.log('testing selectFilesHandler');
                         selectFilesHandler(e);
                         break;
                     case 'uploadSubmitHandler':
-                        // console.log('testing uploadSubmitHandler');
                         uploadSubmitHandler(e);
                         break;
-                    case 'removeItemHandler':
-                        // console.log('testing removeItemHandler');
-                        removeItemHandler(e);
-                        break;
                     default:
-                        // console.log('no function specified');
                         break;
                     }
                 });
@@ -238,7 +233,23 @@
         }
 
         function uploadSubmitHandler () {
-            console.log('submit');
+            dom.generalErrorText.empty();
+            if (state.niceBatch.length === 0) {
+                dom.generalErrorText.text(options.noFilesSelectedError);
+            } else {
+                var data = new FormData();
+                for (var i = 0; i < state.niceBatch.length; i++) {
+                    data.append('files[]', state.niceBatch[i].file, state.niceBatch[i].fileName);
+                }
+                $.ajax({
+                    type: 'POST',
+                    url: options.ajaxUrl,
+                    data: data,
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                });
+            }
         }
 
         function selectFilesHandler (e) {

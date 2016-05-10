@@ -14,10 +14,12 @@
   "author": "Rob Copeland",
   "license": "MIT",
   "dependencies": {
+    "jquery": "^2.2.3",
     "jsdom": "^8.5.0",
     "jsdomify": "^2.1.0",
     "mocha": "^2.4.5",
     "should": "^8.3.1",
+    "sinon": "^1.17.4",
     "watch": "^0.18.0"
   }
 }

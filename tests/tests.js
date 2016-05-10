@@ -2,6 +2,7 @@
 var should = require('should');
 var jsdom = require('jsdom');
 var fs = require('fs');
+var sinon = require('sinon');
 
 var htmlSource = fs.readFileSync('./tests/html-stub.html', 'utf8');
 var document = jsdom.jsdom(htmlSource);
@@ -147,25 +148,91 @@ describe('Usage Bar', function () {
             var dropEventManyFiles = window.$.Event('uploaderTestEvent');
             dropEventManyFiles.functionName = 'selectFilesHandler';
             dropEventManyFiles.target = {};
-            var file = new File([], 'test.jpg', {});
+            var fileString = [''];
+            for (var i = 0; i < 50000; i++) {
+                fileString[0] += 'Lorem ipsum dolor sit amet something something';
+            }
+            var file = new File(fileString, 'test.jpg', {});
             dropEventManyFiles.target.files = [file];
             window.$('body').trigger(dropEventManyFiles);
-            // console.log(window.$('.js-uploader__usage-bar-container').text());
+            should.equal('Using 4% (2.19 MB) of 50MB', window.$('.js-uploader__usage-bar-container').text());
         });
-        // it('should acurately show the size of files selected', function () {});
-        // it('should have the overLimit class if more than the limit is selected', function () {});
-        // it('should remove the overLimit class if it was over the limit and then enough files are removed to go below it', function () {});
+        it('should have the overLimit class if more than the limit is selected', function () {
+            var dropEventManyFiles = window.$.Event('uploaderTestEvent');
+            dropEventManyFiles.functionName = 'selectFilesHandler';
+            dropEventManyFiles.target = {};
+            var fileString = [''];
+            for (var i = 0; i < 50000; i++) {
+                fileString[0] += 'Lorem ipsum dolor sit amet something something';
+            }
+
+            for (var j = 0; j < 25; j++) {
+                fileString.push(fileString[0]);
+            }
+
+            var file = new File(fileString, 'test.jpg', {});
+            dropEventManyFiles.target.files = [file];
+            window.$('body').trigger(dropEventManyFiles);
+            should.equal(1, window.$('.usage-bar--over-limit').size());
+        });
+        it('should remove the overLimit class if it was over the limit and then enough files are removed to go below it', function () {
+            var dropEventManyFiles = window.$.Event('uploaderTestEvent');
+            dropEventManyFiles.functionName = 'selectFilesHandler';
+            dropEventManyFiles.target = {};
+            var fileString = [''];
+            for (var i = 0; i < 50000; i++) {
+                fileString[0] += 'Lorem ipsum dolor sit amet something something';
+            }
+
+            for (var j = 0; j < 25; j++) {
+                fileString.push(fileString[0]);
+            }
+
+            var file = new File(fileString, 'test.jpg', {});
+            dropEventManyFiles.target.files = [file];
+            window.$('body').trigger(dropEventManyFiles);
+            should.equal(1, window.$('.usage-bar--over-limit').size());
+            // remove them all
+            window.$('.js-upload-remove-link').click();
+            should.equal(0, window.$('.usage-bar--over-limit').size());
+        });
     });
 });
-// should test that a nice item is built properly
-// should test that a naughty item is built properly
-//
-// describe('Upload Submit', function () {
-//     describe('#uploadsubmit', function () {
-//         it('should make an ajax request with the files as formdata', function () {});
-//         it('should add a spinner on submit', function () {});
-//         it('should display an error if submitted with no files selected', function () {});
-//         it('should not allow submit if isUploading state is active', function () {});
-//         it('should not allow removing items from the nice list if isUploading state is active', function () {});
-//     });
-// });
+describe('Upload Submit', function () {
+    describe('#uploadsubmit', function () {
+        it('should make an ajax request with the files as formdata', function () {
+            // select some files
+            var dropEventManyFiles = window.$.Event('uploaderTestEvent');
+            dropEventManyFiles.functionName = 'selectFilesHandler';
+            dropEventManyFiles.target = {};
+            var fileString = [''];
+            for (var i = 0; i < 50000; i++) {
+                fileString[0] += 'Lorem ipsum dolor sit amet something something';
+            }
+
+            for (var j = 0; j < 25; j++) {
+                fileString.push(fileString[0]);
+            }
+
+            var file = new File(fileString, 'test.jpg', {});
+            dropEventManyFiles.target.files = [file];
+            window.$('body').trigger(dropEventManyFiles);
+
+            sinon.spy(window.$, 'ajax');
+
+            // trigger upload submit
+            var submitUpload = window.$.Event('uploaderTestEvent');
+            submitUpload.functionName = 'uploadSubmitHandler';
+            window.$('body').trigger(submitUpload);
+            should.equal(true, window.$.ajax.calledOnce);
+            window.$.ajax.restore();
+        });
+        it('should display an error if submitted with no files selected', function () {
+            window.$('.js-uploader-box').uploader({testMode: true});
+            var submitUpload = window.$.Event('uploaderTestEvent');
+            submitUpload.functionName = 'uploadSubmitHandler';
+            window.$('body').trigger(submitUpload);
+            should.equal('Select some files.', window.$('.js-uploader__general-error-text').text());
+        });
+    });
+});
