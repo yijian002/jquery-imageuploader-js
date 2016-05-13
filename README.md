@@ -1,11 +1,11 @@
-# Uploader JQuery Plugin
+# Image Uploader
 
-A little plugin that creates and styles a UI for uploading a set of files to the server. It includes rendering little thumbnails
+A little jquery plugin that creates and styles a UI for uploading a set of files to the server. It includes rendering little thumbnails
 when it can, and letting the user add or remove files before sending them up.
 
 On submit, the plugin submits an ajax request containing the files as formdata.
 
-!['a demo gif of jquery.uploader.js'](demo.gif)
+!['a demo gif of jquery.uploader.js'](assets/demo.gif)
 
 ## Getting Started
 
@@ -46,7 +46,7 @@ Here's the options you can set:
 
 ## Styling the Uploader yourself
 
-Here's the classes you'll need to style, take a look at the sample css for what I did:
+Here's the classes you'll need to style, take a look at the scss directory for what I did:
 
 * uploader__box
 * uploader__hide
@@ -67,7 +67,23 @@ Here's the classes you'll need to style, take a look at the sample css for what 
 
 ## Is the uploader unit tested?
 
-  Kinda. I wrote tests to test the public interface, but I'm not particularly good
-  at writing unit tests. You can run them by:
+  Kinda. I wrote tests for the public interface, but I'm not particularly good at writing unit tests. You can run them by:
 
     npm run tests
+
+## Contribution
+
+  I haven't thought this through yet. If you fork the project, you can build it by doing:
+
+    npm run build
+
+  You can do other stuff too:
+
+  * npm run js - build just the javascript part
+  * npm run js:watch - build and watch js files
+  * npm run scss - build just the css part
+  * npm run scss:watch - build and run scss files
+  * npm start - run an instance of it with browser-sync (localhost:3000)
+  * npm test - run the js unit tests
+
+  Enjoy!

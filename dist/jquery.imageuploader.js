@@ -12,7 +12,6 @@
             dropZone: $('body'),
             fileTypeWhiteList: ['jpg', 'png', 'jpeg', 'gif', 'pdf'],
             badFileTypeMessage: 'Sorry, we\'re unable to accept this type of file.',
-            noFilesSelectedError: 'Please select some files.',
             ajaxUrl: '/ajax/upload',
             testMode: false
         }, options);

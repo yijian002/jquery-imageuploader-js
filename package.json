@@ -4,9 +4,9 @@
   "description": "A JQuery plugin for a file uploader",
   "main": "js/jquery.uploader.js",
   "scripts": {
-    "js": "cp js/jquery.uploader.js jquery.uploader.min.js",
-    "js-prod": "node_modules/.bin/uglifyjs js/jquery.uploader.js -o jquery.uploader.min.js",
-    "scss": "node_modules/.bin/node-sass --include-path scss scss/main.scss main.css",
+    "build": "npm run js && npm run scss",
+    "js": "cp js/jquery.imageuploader.js dist/jquery.imageuploader.js",
+    "scss": "node_modules/.bin/node-sass --include-path scss scss/main.scss dist/styles.imageuploader.css",
     "scss:watch": "node_modules/.bin/watch 'npm run scss' scss",
     "test": "node_modules/.bin/mocha tests/tests.js --reporter nyan",
     "js:watch": "node_modules/.bin/watch 'npm run js' js",
