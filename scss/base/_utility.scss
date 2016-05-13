@@ -1,0 +1,34 @@
+%clearfix::after {
+    content: '';
+    clear: both;
+    display: table;
+}
+
+%hide-but-allow-focus {
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    width: 0.1px;
+    z-index: -1;
+}
+
+%screen-reader-text {
+    clip: rect(1px, 1px, 1px, 1px);
+    position: absolute !important;
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+}
+
+.hide {
+    display: none;
+}
+
+.show {
+    display: block;
+}
+
+.error {
+    color: $red;
+}

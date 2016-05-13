@@ -35,9 +35,9 @@ function propagateToGlobal (window) {
 describe('Setup', function () {
     describe('#clearout', function () {
         // set up the uploader
-        window.$('.js-uploader-box').uploader({testMode: true});
+        window.$('.js-uploader__box').uploader({testMode: true});
         it('should have the required container still', function () {
-            should.equal(1, window.$('.js-uploader-box').size());
+            should.equal(1, window.$('.js-uploader__box').size());
         });
         it('should not have the stuff that was in there at first', function () {
             should.equal(0, window.$('.js-fallback-form').size());
@@ -48,49 +48,42 @@ describe('Setup', function () {
             should.equal(1, window.$('.js-uploader__submit-button').size());
         });
         it('should have added the select button (label and input)', function () {
-            should.equal(1, window.$('.js-uploader__file-input').size());
-            should.equal(1, window.$('.js-uploader__file-label').size());
+            should.equal(1, window.$('.js-uploader__box .js-uploader__file-input').size());
+            should.equal(1, window.$('.js-uploader__box .js-uploader__file-label').size());
         });
-        it('should have added general error text', function () {
-            should.equal(1, window.$('.js-uploader__general-error-text').size());
+        it('should have added further instructions', function () {
+            should.equal(1, window.$('.js-uploader__further-instructions').size());
         });
-        it('should have added success text', function () {
-            should.equal(1, window.$('.js-uploader__success-message').size());
-        });
-        it('should have added the nice list', function () {
-            should.equal(1, window.$('.js-uploader__nice-list').size());
-        });
-        it('should have added the naughty list', function () {
-            should.equal(1, window.$('.js-uploader__naughty-list').size());
-        });
-        it('should have added the usage bar container', function () {
-            should.equal(1, window.$('.js-uploader__usage-bar-container').size());
+        it('should have added the file list', function () {
+            should.equal(1, window.$('.js-uploader__file-list').size());
         });
     });
 });
 
 describe('Drag and Drop', function () {
     describe('#drop', function () {
-        it('should add a nice list item if a good file is dropped', function () {
+        it('should add a file list item if a good file is dropped', function () {
             // 'drop' a good file
             var dropEventOneFile = window.$.Event('uploaderTestEvent');
             dropEventOneFile.functionName = 'selectFilesHandler';
             dropEventOneFile.target = {};
             dropEventOneFile.target.files = [new File([], 'test.jpg', {})];
             window.$('body').trigger(dropEventOneFile);
-            should.equal(1, window.$('.js-uploader__nice-list').children().size());
+            should.equal(1, window.$('.js-uploader__file-list').children().size());
         });
-        it('should add a naughty list item if a bad file is dropped', function () {
+        it('should add a file list item if a bad file is dropped', function () {
+            // clear the list
+            window.$('.js-uploader__file-list').empty();
             // 'drop' a bad file
             var dropEventOneFile = window.$.Event('uploaderTestEvent');
             dropEventOneFile.functionName = 'selectFilesHandler';
             dropEventOneFile.target = {};
             dropEventOneFile.target.files = [new File([], 'test.csv', {})];
             window.$('body').trigger(dropEventOneFile);
-            should.equal(1, window.$('.js-uploader__naughty-list').children().size());
+            should.equal(1, window.$('.js-uploader__file-list').children().size());
         });
-        it('should add a nice list item for each, if a set of good files is dropped', function () {
-            window.$('.js-uploader__nice-list').empty();
+        it('should add a file list item for each, if a set of good files is dropped', function () {
+            window.$('.js-uploader__file-list').empty();
             var dropEventManyGoodFiles = window.$.Event('uploaderTestEvent');
             dropEventManyGoodFiles.functionName = 'selectFilesHandler';
             dropEventManyGoodFiles.target = {};
@@ -102,10 +95,10 @@ describe('Drag and Drop', function () {
                 new File([], 'test.jpg', {})
             ];
             window.$('body').trigger(dropEventManyGoodFiles);
-            should.equal(5, window.$('.js-uploader__nice-list').children().size());
+            should.equal(5, window.$('.js-uploader__file-list').children().size());
         });
-        it('should add a naughty list item for each,  if a set of bad files is dropped', function () {
-            window.$('.js-uploader__naughty-list').empty();
+        it('should add a file list item for each file, if a set of bad files is dropped', function () {
+            window.$('.js-uploader__file-list').empty();
             var dropEventManyBadFiles = window.$.Event('uploaderTestEvent');
             dropEventManyBadFiles.functionName = 'selectFilesHandler';
             dropEventManyBadFiles.target = {};
@@ -117,11 +110,10 @@ describe('Drag and Drop', function () {
                 new File([], 'test.csv', {})
             ];
             window.$('body').trigger(dropEventManyBadFiles);
-            should.equal(5, window.$('.js-uploader__naughty-list').children().size());
+            should.equal(5, window.$('.js-uploader__file-list').children().size());
         });
-        it('should add a naughty list item for each bad one and a nice for each good one,  if a set of bad and good files is dropped', function () {
-            window.$('.js-uploader__naughty-list').empty();
-            window.$('.js-uploader__nice-list').empty();
+        it('should add a file list item for each bad one and for each good one,  if a set of bad and good files is dropped', function () {
+            window.$('.js-uploader__file-list').empty();
             var dropEventManyFiles = window.$.Event('uploaderTestEvent');
             dropEventManyFiles.functionName = 'selectFilesHandler';
             dropEventManyFiles.target = {};
@@ -133,71 +125,11 @@ describe('Drag and Drop', function () {
                 new File([], 'test.jpg', {})
             ];
             window.$('body').trigger(dropEventManyFiles);
-            should.equal(3, window.$('.js-uploader__nice-list').children().size());
-            should.equal(2, window.$('.js-uploader__naughty-list').children().size());
+            should.equal(5, window.$('.js-uploader__file-list').children().size());
         });
     });
 });
 
-describe('Usage Bar', function () {
-    describe('#usagebar', function () {
-        it('should start in its zero state', function () {
-            should.equal('Using 0% (0 Bytes) of 50MB', window.$('.js-uploader__usage-bar-container').text());
-        });
-        it('should acurately show the percentage of limit used (rounded)', function () {
-            var dropEventManyFiles = window.$.Event('uploaderTestEvent');
-            dropEventManyFiles.functionName = 'selectFilesHandler';
-            dropEventManyFiles.target = {};
-            var fileString = [''];
-            for (var i = 0; i < 50000; i++) {
-                fileString[0] += 'Lorem ipsum dolor sit amet something something';
-            }
-            var file = new File(fileString, 'test.jpg', {});
-            dropEventManyFiles.target.files = [file];
-            window.$('body').trigger(dropEventManyFiles);
-            should.equal('Using 4% (2.19 MB) of 50MB', window.$('.js-uploader__usage-bar-container').text());
-        });
-        it('should have the overLimit class if more than the limit is selected', function () {
-            var dropEventManyFiles = window.$.Event('uploaderTestEvent');
-            dropEventManyFiles.functionName = 'selectFilesHandler';
-            dropEventManyFiles.target = {};
-            var fileString = [''];
-            for (var i = 0; i < 50000; i++) {
-                fileString[0] += 'Lorem ipsum dolor sit amet something something';
-            }
-
-            for (var j = 0; j < 25; j++) {
-                fileString.push(fileString[0]);
-            }
-
-            var file = new File(fileString, 'test.jpg', {});
-            dropEventManyFiles.target.files = [file];
-            window.$('body').trigger(dropEventManyFiles);
-            should.equal(1, window.$('.usage-bar--over-limit').size());
-        });
-        it('should remove the overLimit class if it was over the limit and then enough files are removed to go below it', function () {
-            var dropEventManyFiles = window.$.Event('uploaderTestEvent');
-            dropEventManyFiles.functionName = 'selectFilesHandler';
-            dropEventManyFiles.target = {};
-            var fileString = [''];
-            for (var i = 0; i < 50000; i++) {
-                fileString[0] += 'Lorem ipsum dolor sit amet something something';
-            }
-
-            for (var j = 0; j < 25; j++) {
-                fileString.push(fileString[0]);
-            }
-
-            var file = new File(fileString, 'test.jpg', {});
-            dropEventManyFiles.target.files = [file];
-            window.$('body').trigger(dropEventManyFiles);
-            should.equal(1, window.$('.usage-bar--over-limit').size());
-            // remove them all
-            window.$('.js-upload-remove-link').click();
-            should.equal(0, window.$('.usage-bar--over-limit').size());
-        });
-    });
-});
 describe('Upload Submit', function () {
     describe('#uploadsubmit', function () {
         it('should make an ajax request with the files as formdata', function () {
@@ -226,13 +158,6 @@ describe('Upload Submit', function () {
             window.$('body').trigger(submitUpload);
             should.equal(true, window.$.ajax.calledOnce);
             window.$.ajax.restore();
-        });
-        it('should display an error if submitted with no files selected', function () {
-            window.$('.js-uploader-box').uploader({testMode: true});
-            var submitUpload = window.$.Event('uploaderTestEvent');
-            submitUpload.functionName = 'uploadSubmitHandler';
-            window.$('body').trigger(submitUpload);
-            should.equal('Select some files.', window.$('.js-uploader__general-error-text').text());
         });
     });
 });

@@ -12,7 +12,7 @@ On submit, the plugin submits an ajax request containing the files as formdata.
 * You should have a section of your page that you want the uploader to take over. The uploader will work on a div or section, and will
 empty it before setting up. I suggest having a non-js solution in this section, so that when the uploader starts up, it can clear your nonjs solution in favor of itself.
 
-* Start up the plugin by calling the plugin on the section it's supposed to take over.
+* Start it up by calling the plugin on the section it's supposed to take over.
 
       $('.upload-box').uploader(options);
 
@@ -20,26 +20,52 @@ empty it before setting up. I suggest having a non-js solution in this section, 
 
 *  **The uploader will not draw thumbnails if the browser doesn't support FileReader (< IE10)**
 
-* The included styling is optional, if you like the default, include styles.uploader.css in your site's css, or if you're using
-SASS, include _uploader.scss in your build. (You can style the uploader yourself as well, see below for details)
+* The included styling is optional, if you like the default, include styles.uploader.css in your site's css
 
 ## Options
+You can set certain things in the options object, like this:
+
+    var options = {
+        optionName: optionValue
+    }
+
+Here's the options you can set:
+
+* submitButtonCopy - What you want the upload submit button to say
+* instructionsCopy - What the instructions inside the box say
+* furtherInstructions - What the instructions outside the box say
+* selectButtonCopy - What the primary file select button says
+* secondarySelectButtonCopy - What the secondary file select button says
+* dropZone - the JQuery element where the uploader should listen for drops (defaults to $('body'))
+* fileTypeWhiteList - The whitelist of file extensions to allow
+* badFileTypeMessage - What the bad file error says
+* ajaxUrl - The url to send the file batch to when its submitted
+
 
 ## Styling the Uploader yourself
 
-  The css in uploader.css / _uploader.scss includes show / hides and other functional type styling you'll need to replicate.
-  Here's a list of the classes I have, and what they do, that you'll need to replicate:
+Here's the classes you'll need to style, take a look at the sample css for what I did:
 
-    .show {
-      display: block;
-    }
-    .hide {
-      display: none;
-    }
+* uploader__box
+* uploader__hide
+* uploader__icon
+* uploader__instructions
+* uploader__contents
+* uploader__file-label
+* uploader__file-label--secondary
+* uploader__file-input
+* uploader__file-input--secondary
+* uploader__submit-button
+* uploader__further-instructions
+* uploader__file-list
+* uploader\__file-list__item
+* uploader\__file-list__text
+* uploader\__file-list__size
+* uploader\__file-list__button
 
-## Is the uploader Unit Tested?
+## Is the uploader unit tested?
 
-  Kinda, I wrote tests to test the public interface, but I didn't unit test internal functions.
-  You can run the tests I have by:
+  Kinda. I wrote tests to test the public interface, but I'm not particularly good
+  at writing unit tests. You can run them by:
 
     npm run tests

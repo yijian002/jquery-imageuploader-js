@@ -1,0 +1,13 @@
+.l-main {
+    @include container(64em);
+}
+
+.l-site-title {
+    @include span(12);
+    @include pre(1);
+}
+
+.l-center-box {
+    @include span(8);
+    @include pre(2);
+}

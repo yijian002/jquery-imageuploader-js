@@ -1,0 +1,115 @@
+.uploader__box {
+    animation: appear 1s;
+    background-color: $white;
+    box-shadow: -2px 2px 20px $grey;
+    text-align: center;
+    transition: all 0.5s;
+}
+
+@keyframes appear {
+    from {
+        margin-top: 3em;
+        opacity: 0;
+    }
+
+    to {
+        margin-top: 0;
+        opacity: 1;
+    }
+}
+
+.uploader__contents {
+    padding: 3em;
+    margin-top: 0;
+    opacity: 1;
+    transition: all 0.4s;
+}
+
+.uploader__file-label,
+.uploader__box .button--secondary {
+    margin: 2em auto;
+}
+
+.uploader__file-label--secondary {
+    display: inline-block;
+    margin: 0 0.5em;
+}
+
+.uploader__file-input {
+    @extend %hide-but-allow-focus;
+}
+
+.uploader__file-label {
+    @extend .button;
+}
+
+.uploader__file-input {
+    @extend %hide-but-allow-focus;
+}
+
+// handle the weird focus issue
+.uploader__file-input:focus + .uploader__file-label {
+    @extend .button:focus;
+    @extend .button--secondary:focus;
+}
+
+.uploader__instructions {
+    @extend .text--important;
+}
+
+.uploader__submit-button {
+    @extend .button;
+    @extend .button--big-bottom;
+}
+
+.uploader__further-instructions {
+    @include pre(2);
+    clear: both;
+    color: $dark-grey;
+    font-size: 0.9em;
+    padding: 0.5em;
+}
+
+.uploader__hide {
+    @extend .hide;
+}
+
+.uploader__icon {
+    @extend .icon;
+}
+
+.uploader__file-list {
+    @extend .file-list;
+}
+
+.uploader__file-list__text {
+    @extend .file-list__text;
+}
+
+.uploader__file-list__item {
+    @extend .file-list__item;
+}
+
+.uploader__file-list__thumbnail {
+    @extend .file-list__thumbnail;
+}
+
+.uploader__icon--spinner {
+    @extend .icon--spinner;
+}
+
+.uploader__file-list__size {
+    @extend .file-list__size;
+}
+
+.uploader__file-list__button {
+    @extend .file-list__button;
+}
+
+.uploader__icon-button {
+    @extend .icon-button;
+}
+
+.uploader__error {
+    @extend .error;
+}

@@ -4,21 +4,21 @@
         var $uploaderBox = this;
 
         options = $.extend({
-            submitButtonCopy: 'Upload Files',
-            instructionsCopy: 'Drag and Drop files, or',
+            submitButtonCopy: 'Upload Selected Files',
+            instructionsCopy: 'Drag and Drop, or',
+            furtherInstructionsCopy: 'Your can also drop more files, or',
             selectButtonCopy: 'Select Files',
+            secondarySelectButtonCopy: 'Select More Files',
             dropZone: $('body'),
-            fileTypeWhiteList: ['jpg', 'png', 'jpeg', 'gif'],
-            maxUploadLimit: 50,
-            badFileTypeMessage: 'We\'re unable to process this file type.',
-            noFilesSelectedError: 'Select some files.',
+            fileTypeWhiteList: ['jpg', 'png', 'jpeg', 'gif', 'pdf'],
+            badFileTypeMessage: 'Sorry, we\'re unable to accept this type of file.',
+            noFilesSelectedError: 'Please select some files.',
             ajaxUrl: '/ajax/upload',
             testMode: false
         }, options);
 
         var state = {
-            niceBatch: [],
-            naughtyBatch: [],
+            fileBatch: [],
             isUploading: false,
             isOverLimit: false,
             listIndex: 0
@@ -26,15 +26,20 @@
 
         // create DOM elements
         var dom = {
-            submitButton: $('<button class="js-uploader__submit-button">' + options.submitButtonCopy + '</button>'),
-            instructions: $('<p class="js-uploader__instructions">' + options.instructionsCopy + '</p>'),
-            selectButton: $('<label for="fileinput" style="cursor: pointer;" class="js-uploader__file-label">' + options.selectButtonCopy +
-                '</label><input style="height: 0; width: 0;" id="fileinput" type="file" multiple class="js-uploader__file-input">'),
-            generalErrorText: $('<p class="js-uploader__general-error-text"></p>'),
-            usageBarContainer: $('<div class="js-uploader__usage-bar-container"></div>'),
-            successMessage: $('<p class="js-uploader__success-message"></p>'),
-            niceList: $('<ul class="js-uploader__nice-list"></ul>'),
-            naughtyList: $('<ul class="js-uploader__naughty-list"></ul>')
+            submitButton: $('<button class="js-uploader__submit-button uploader__submit-button uploader__hide">' +
+                options.submitButtonCopy + '<i class="js-uploader__icon fa fa-upload uploader__icon"></i></button>'),
+            instructions: $('<p class="js-uploader__instructions uploader__instructions">' +
+                options.instructionsCopy + '</p>'),
+            selectButton: $('<input style="height: 0; width: 0;" id="fileinput" type="file" multiple class="js-uploader__file-input uploader__file-input">' +
+                '<label for="fileinput" style="cursor: pointer;" class="js-uploader__file-label uploader__file-label">' +
+                options.selectButtonCopy + '</label>'),
+            secondarySelectButton: $('<input style="height: 0; width: 0;" id="fileinput" type="file"' +
+                ' multiple class="js-uploader__file-input uploader__file-input">' +
+                '<label for="fileinput" style="cursor: pointer;" class="js-uploader__file-label uploader__file-label uploader__file-label--secondary">' +
+                options.secondarySelectButtonCopy + '</label>'),
+            fileList: $('<ul class="js-uploader__file-list uploader__file-list"></ul>'),
+            contentsContainer: $('<div class="js-uploader__contents uploader__contents"></div>'),
+            furtherInstructions: $('<p class="js-uploader__further-instructions uploader__further-instructions uploader__hide">' + options.furtherInstructionsCopy + '</p>')
         };
 
         // set it all up
@@ -52,15 +57,16 @@
         }
 
         function setupDOM () {
-            $uploaderBox
-                .append(dom.successMessage)
-                .append(dom.niceList)
-                .append(dom.naughtyList)
+            dom.contentsContainer
                 .append(dom.instructions)
-                .append(dom.selectButton)
-                .append(dom.usageBarContainer)
-                .append(dom.generalErrorText)
-                .after(dom.submitButton);
+                .append(dom.selectButton);
+            dom.furtherInstructions
+                .append(dom.secondarySelectButton);
+            $uploaderBox
+                .append(dom.fileList)
+                .append(dom.contentsContainer)
+                .append(dom.submitButton)
+                .after(dom.furtherInstructions);
         }
 
         function bindUIEvents () {
@@ -80,10 +86,7 @@
             dom.submitButton.on('click', uploadSubmitHandler);
 
             // remove link handler
-            options.dropZone.on('click', '.js-upload-remove-link', removeItemHandler);
-
-            // render the initial usage bar
-            renderUsageBar();
+            options.dropZone.on('click', '.js-upload-remove-button', removeItemHandler);
 
             // expose handlers for testing
             if (options.testMode) {
@@ -102,66 +105,66 @@
             }
         }
 
-        function addNiceItem (file) {
+        function addItem (file) {
             var fileName = cleanName(file.name);
             var fileSize = file.size;
             var id = state.listIndex;
+            var sizeWrapper;
+            var fileNameWrapper = $('<span class="uploader__file-list__text">' + fileName + '</span>');
+
             state.listIndex++;
 
-            // add to the batch
-            state.niceBatch.push({file: file, id: id, fileName: fileName, fileSize: fileSize});
+            var listItem = $('<li class="uploader__file-list__item" data-index="' + id + '"></li>');
+            var thumbnailContainer = $('<span class="uploader__file-list__thumbnail"></span>');
+            var thumbnail = $('<img class="thumbnail"><i class="fa fa-spinner fa-spin uploader__icon--spinner"></i>');
+            var removeLink = $('<span class="uploader__file-list__button"><button class="uploader__icon-button js-upload-remove-button fa fa-times" data-index="' + id + '"></button></span>');
 
-            // add to the DOM
-            var listItem = $('<li class="l-stack-split" data-index="' + id + '"></li>');
-            var thumbnail = $('<img style="height: auto; max-width: 50px; max-height: 50px;" class="thumbnail">');
+            // validate the file
+            if (options.fileTypeWhiteList.indexOf(getExtension(file.name).toLowerCase()) !== -1) {
+                // file is ok, add it to the batch
+                state.fileBatch.push({file: file, id: id, fileName: fileName, fileSize: fileSize});
+                sizeWrapper = $('<span class="uploader__file-list__size">' + formatBytes(fileSize) + '</span>');
+            } else {
+                // file is not ok, only add it to the dom
+                sizeWrapper = $('<span class="uploader__file-list__size"><span class="uploader__error">' + options.badFileTypeMessage + '</span></span>');
+            }
+
+            // create the thumbnail, if you can
             if (window.FileReader && file.type.indexOf('image') !== -1) {
                 var reader = new FileReader();
                 reader.onloadend = function () {
                     thumbnail.attr('src', reader.result);
+                    thumbnail.parent().find('i').remove();
                 };
                 reader.onerror = function () {
                     thumbnail.remove();
                 };
                 reader.readAsDataURL(file);
-                listItem.append(thumbnail);
             } else if (file.type.indexOf('image') === -1) {
-                thumbnail = $('<svg class="icon icon--huge icon--inline" viewBox="0 0 100 100"><use xlink:href="#file-text-o" /></svg>');
-                listItem.append(thumbnail);
+                thumbnail = $('<i class="fa fa-file-o uploader__icon">');
             }
-            var fileNameWrapper = $('<span class="l-stack-split__item file-list__text">' + fileName + '</span>');
-            listItem.append(fileNameWrapper);
 
-            var detailsWrapper = $('<span class="l-stack-split__item file-list__details"></span>');
-            var sizeWrapper = $('<span class="file-list__size">' + formatBytes(fileSize) + '</span>');
-            var removeLink = $('<a href="#nogo" class="link js-upload-remove-link" data-index="' + id + '">Remove</a>');
-            detailsWrapper.append(sizeWrapper);
-            detailsWrapper.append(removeLink);
-            listItem.append(detailsWrapper);
-            dom.niceList.append(listItem);
+            thumbnailContainer.append(thumbnail);
+            listItem.append(thumbnailContainer);
+
+            listItem
+                .append(fileNameWrapper)
+                .append(sizeWrapper)
+                .append(removeLink);
+
+            dom.fileList.append(listItem);
         }
 
         function removeNiceItem (id) {
             // remove from the batch
-            for (var i = 0; i < state.niceBatch.length; i++) {
-                if (state.niceBatch[i].id === parseInt(id)) {
-                    state.niceBatch.splice(i, 1);
+            for (var i = 0; i < state.fileBatch.length; i++) {
+                if (state.fileBatch[i].id === parseInt(id)) {
+                    state.fileBatch.splice(i, 1);
                     break;
                 }
             }
             // remove from the DOM
-            dom.niceList.find('li[data-index="' + id + '"]').remove();
-            // update the usage bar
-            renderUsageBar();
-        }
-
-        function addNaughtyItem (fileName, errorMessage) {
-            // add to the DOM
-            var listItem = $('<li class="l-stack-split"></li>');
-            var fileNameWrapper = $('<span class="l-stack-split__item file-list__text">' + fileName + '</span>');
-            listItem.append(fileNameWrapper);
-            var detailsWrapper = $('<span class="l-stack-split__item file-list__details error">' + errorMessage + '</span>');
-            listItem.append(detailsWrapper);
-            dom.naughtyList.append(listItem);
+            dom.fileList.find('li[data-index="' + id + '"]').remove();
         }
 
         function getExtension (path) {
@@ -174,12 +177,6 @@
             return basename.slice(pos + 1);
         }
 
-        function getPercentageUsed () {
-            var limit = options.maxUploadLimit * 1024 * 1024;
-            var totalSize = getTotalSize(state.niceBatch);
-            return Math.round((totalSize / limit) * 100);
-        }
-
         function formatBytes (bytes, decimals) {
             if (bytes === 0) return '0 Bytes';
             var k = 1024;
@@ -189,57 +186,16 @@
             return (bytes / Math.pow(k, i)).toPrecision(dm) + ' ' + sizes[i];
         }
 
-        function getTotalSize (files) {
-            var totalSize = 0;
-            for (var i = 0; i < files.length; i++) {
-                totalSize += files[i].fileSize;
-            }
-            return totalSize;
-        }
-
         function cleanName (name) {
             name = name.replace(/\s+/gi, '-'); // Replace white space with dash
             return name.replace(/[^a-zA-Z0-9.\-]/gi, ''); // Strip any special characters
         }
 
-        function renderUsageBar () {
-            var percentageUsed = getPercentageUsed();
-            var totalSizeInBytes = formatBytes(getTotalSize(state.niceBatch));
-            var isOverLimit = '';
-
-            if (percentageUsed >= 100) {
-                isOverLimit = 'usage-bar--over-limit';
-                state.isOverLimit = true;
-                dom.generalErrorText
-                    .empty()
-                    .text(options.overLimitError);
-            } else {
-                state.isOverLimit = false;
-                dom.generalErrorText.empty();
-            }
-
-            var usageBar = $(
-                '<div class="usage-bar__filling ' + isOverLimit + '" style="width: ' + percentageUsed + '%"></div>' +
-                '<div class="usage-bar__text">' +
-                'Using <span class="js-batch-size-percentage">' + percentageUsed +
-                '%</span> (<span class="js-batch-size">' + totalSizeInBytes + '</span>) of ' +
-                options.maxUploadLimit + 'MB' +
-                '</div>'
-            );
-
-            dom.usageBarContainer
-                .empty()
-                .append(usageBar);
-        }
-
         function uploadSubmitHandler () {
-            dom.generalErrorText.empty();
-            if (state.niceBatch.length === 0) {
-                dom.generalErrorText.text(options.noFilesSelectedError);
-            } else {
+            if (state.fileBatch.length !== 0) {
                 var data = new FormData();
-                for (var i = 0; i < state.niceBatch.length; i++) {
-                    data.append('files[]', state.niceBatch[i].file, state.niceBatch[i].fileName);
+                for (var i = 0; i < state.fileBatch.length; i++) {
+                    data.append('files[]', state.fileBatch[i].file, state.fileBatch[i].fileName);
                 }
                 $.ajax({
                     type: 'POST',
@@ -257,9 +213,6 @@
             e.stopPropagation();
 
             state.naughtyBatch = [];
-            dom.naughtyList.empty();
-            dom.generalErrorText.empty();
-            dom.successMessage.empty();
 
             if (!state.isUploading) {
                 // files come from the input or a drop
@@ -267,18 +220,22 @@
 
                 // process each incoming file
                 for (var i = 0; i < files.length; i++) {
-                    // test the file extension against allowed types
-                    if (options.fileTypeWhiteList.indexOf(getExtension(files[i].name).toLowerCase()) !== -1) {
-                        // if file is ok, add to the nice list
-                        addNiceItem(files[i]);
-                    } else {
-                        // else add to the naughty list
-                        addNaughtyItem(files[i].name, options.badFileTypeMessage);
-                    }
+                    addItem(files[i]);
                 }
             }
+            updateShowHidePieces();
+        }
 
-            renderUsageBar();
+        function updateShowHidePieces () {
+            if (dom.fileList.children().size() !== 0) {
+                $uploaderBox.find('.js-uploader__submit-button').removeClass('uploader__hide');
+                $('.js-uploader__further-instructions').removeClass('uploader__hide');
+                $uploaderBox.find('.js-uploader__contents').addClass('uploader__hide');
+            } else {
+                $uploaderBox.find('.js-uploader__submit-button').addClass('uploader__hide');
+                $('.js-uploader__further-instructions').addClass('uploader__hide');
+                $uploaderBox.find('.js-uploader__contents').removeClass('uploader__hide');
+            }
         }
 
         function removeItemHandler (e) {
@@ -287,6 +244,8 @@
                 var removeIndex = e.target.getAttribute('data-index');
                 removeNiceItem(removeIndex);
             }
+
+            updateShowHidePieces();
         }
 
         return this;

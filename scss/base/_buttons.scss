@@ -1,0 +1,63 @@
+.button {
+    background-color: $white;
+    background-color: transparent;
+    border: 2px solid $primary-color;
+    border-radius: 5px;
+    color: $primary-color;
+    display: block;
+    font-size: 0.8em;
+    padding: 1em 2em;
+    max-width: 15em;
+    text-transform: uppercase;
+    transition: background-color 0.2s;
+}
+
+.button:hover,
+.button:active,
+.button:focus {
+    background-color: $primary-color;
+    color: $white;
+}
+
+.button--secondary {
+    color: $secondary-color;
+    border-color: $secondary-color;
+    padding: 0.5em 1em;
+    max-width: 15em;
+}
+
+.button--secondary:hover,
+.button--secondary:active,
+.button--secondary:focus {
+    background-color: $secondary-color;
+    color: $white;
+}
+
+.button--inline {
+    display: inline-block;
+}
+
+.button--big-bottom {
+    max-width: none;
+    width: 100%;
+    text-align: center;
+    border-radius: 0;
+    background-color: $primary-color;
+    color: $white;
+}
+
+.button--big-bottom:hover,
+.button--big-bottom:active,
+.button--big-bottom:focus {
+    background-color: lighten($primary-color, 10%);
+}
+
+.icon-button {
+    background: transparent;
+    border: 0;
+    color: $grey;
+}
+
+.icon-button:hover {
+    color: $black;
+}

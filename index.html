@@ -1,17 +1,27 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="no-js">
 <head>
     <meta charset="UTF-8">
-    <title>Uploader Jquery plugin</title>
+    <title>File Uploader Jquery plugin</title>
+    <link rel="stylesheet" href="main.css">
+    <script>
+        var htmlElement = document.getElementsByTagName('html')[0];
+        htmlElement.classList.remove('no-js');
+        htmlElement.classList.add('js');
+    </script>
 </head>
 <body>
-    <section role="main">
-        <h1>Uploader</h1>
-        <div class="js-uploader-box">
+    <section role="main" class="l-main">
+        <header class="site-header">
+            <h1 class="site-title l-site-title">File Uploader</h1>
+        </header>
+        <div class="uploader__box js-uploader__box l-center-box">
             <form action="your/nonjs/fallback/" method="POST">
-                <label for="fileinput">Select Files</label>
-                <input id="fileinput" type="file" multiple value="Select Files">
-                <input type="submit" value="Upload Selected Files">
+                <div class="uploader__contents">
+                    <label class="button button--secondary" for="fileinput">Select Files</label>
+                    <input id="fileinput" class="uploader__file-input" type="file" multiple value="Select Files">
+                </div>
+                <input class="button button--big-bottom" type="submit" value="Upload Selected Files">
             </form>
         </div>
     </section>
@@ -22,8 +32,22 @@
     <script>
         (function(){
             var options = {};
-            $('.js-uploader-box').uploader(options);
+            $('.js-uploader__box').uploader(options);
         }());
     </script>
+    <script type="text/javascript">
+        WebFontConfig = {
+            google: { families: [ 'Source+Sans+Pro::latin' ] }
+        };
+        (function() {
+            var wf = document.createElement('script');
+            wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+            wf.type = 'text/javascript';
+            wf.async = 'true';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(wf, s);
+        })();
+  </script>
+  <script src="https://use.fontawesome.com/970dbbd0a3.js"></script>
 </body>
 </html>
