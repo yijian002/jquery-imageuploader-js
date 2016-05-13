@@ -86,14 +86,17 @@ Here's the classes you'll need to style, take a look at the scss directory for w
 
   You can do other stuff too:
 
-  * npm run js - build just the javascript part
-  * npm run js:watch - build and watch js files
-  * npm run scss - build just the css part
-  * npm run scss:watch - build and run scss files
-  * npm start - run an instance of it with browser-sync (localhost:3000)
-  * npm test - run the js unit tests
+| Command | Description |
+| ------- |:-----------:|
+|
+| npm run js | build just the javascript part |
+| npm run js:watch | build and watch js files |
+| npm run scss | build just the css part |
+| npm run scss:watch | build and run scss files |
+| npm start | run an instance of it with browser-sync (localhost:3000) |
+| npm test | run the js unit tests |
 
   Try to stick to the conventions I have going already and open a PR when
-  you're done. 
+  you're done.
 
   Enjoy!
