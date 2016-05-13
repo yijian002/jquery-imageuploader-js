@@ -5,6 +5,8 @@ when it can, and letting the user add or remove files before sending them up.
 
 On submit, the plugin submits an ajax request containing the files as formdata.
 
+!['a demo gif of jquery.uploader.js'](demo.gif)
+
 ## Getting Started
 
 * You'll need to include jquery.uploader.js in your site's Javascript.
