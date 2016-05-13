@@ -16,7 +16,7 @@ empty it before setting up. I suggest having a non-js solution in this section, 
 
 * Start it up by calling the plugin on the section it's supposed to take over.
 
-      $('.upload-box').uploader(options);
+    $('.upload-box').uploader(options);
 
 *  **The uploader will not start up if the browser doesn't support FormData (< IE10).**
 
