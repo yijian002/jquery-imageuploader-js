@@ -88,7 +88,6 @@ Here's the classes you'll need to style, take a look at the scss directory for w
 
 | Command | Description |
 | ------- |:-----------:|
-|
 | npm run js | build just the javascript part |
 | npm run js:watch | build and watch js files |
 | npm run scss | build just the css part |
