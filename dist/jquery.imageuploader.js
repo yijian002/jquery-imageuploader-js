@@ -1,3 +1,6 @@
+/*
+ * ©2016 Quicken Loans Inc. All rights reserved.
+ */
 /* global jQuery FormData FileReader */
 (function ($) {
     $.fn.uploader = function (options, testMode) {
