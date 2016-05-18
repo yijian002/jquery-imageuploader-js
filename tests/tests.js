@@ -1,3 +1,6 @@
+/*
+ * ©2016 Quicken Loans Inc. All rights reserved.
+ */
 /* global describe it File */
 var should = require('should');
 var jsdom = require('jsdom');
