@@ -2,3 +2,6 @@
 .DS_Store
 main.css
 node_modules/
+js/
+scss/
+index.html

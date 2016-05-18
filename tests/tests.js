@@ -16,7 +16,7 @@ require('jquery')(window);
 window.console = console;
 
 var scriptEl = window.document.createElement('script');
-scriptEl.innerHTML = fs.readFileSync('./js/jquery.uploader.js', 'utf8');
+scriptEl.innerHTML = fs.readFileSync('./js/jquery.imageuploader.js', 'utf8');
 window.document.body.appendChild(scriptEl);
 
 global.document = document;
@@ -68,7 +68,7 @@ describe('Drag and Drop', function () {
             dropEventOneFile.functionName = 'selectFilesHandler';
             dropEventOneFile.target = {};
             dropEventOneFile.target.files = [new File([], 'test.jpg', {})];
-            window.$('body').trigger(dropEventOneFile);
+            window.$('.js-uploader__box').trigger(dropEventOneFile);
             should.equal(1, window.$('.js-uploader__file-list').children().size());
         });
         it('should add a file list item if a bad file is dropped', function () {
@@ -79,7 +79,7 @@ describe('Drag and Drop', function () {
             dropEventOneFile.functionName = 'selectFilesHandler';
             dropEventOneFile.target = {};
             dropEventOneFile.target.files = [new File([], 'test.csv', {})];
-            window.$('body').trigger(dropEventOneFile);
+            window.$('.js-uploader__box').trigger(dropEventOneFile);
             should.equal(1, window.$('.js-uploader__file-list').children().size());
         });
         it('should add a file list item for each, if a set of good files is dropped', function () {
@@ -94,7 +94,7 @@ describe('Drag and Drop', function () {
                 new File([], 'test.jpg', {}),
                 new File([], 'test.jpg', {})
             ];
-            window.$('body').trigger(dropEventManyGoodFiles);
+            window.$('.js-uploader__box').trigger(dropEventManyGoodFiles);
             should.equal(5, window.$('.js-uploader__file-list').children().size());
         });
         it('should add a file list item for each file, if a set of bad files is dropped', function () {
@@ -109,7 +109,7 @@ describe('Drag and Drop', function () {
                 new File([], 'test.csv', {}),
                 new File([], 'test.csv', {})
             ];
-            window.$('body').trigger(dropEventManyBadFiles);
+            window.$('.js-uploader__box').trigger(dropEventManyBadFiles);
             should.equal(5, window.$('.js-uploader__file-list').children().size());
         });
         it('should add a file list item for each bad one and for each good one,  if a set of bad and good files is dropped', function () {
@@ -124,7 +124,7 @@ describe('Drag and Drop', function () {
                 new File([], 'test.jpg', {}),
                 new File([], 'test.jpg', {})
             ];
-            window.$('body').trigger(dropEventManyFiles);
+            window.$('.js-uploader__box').trigger(dropEventManyFiles);
             should.equal(5, window.$('.js-uploader__file-list').children().size());
         });
     });
@@ -148,14 +148,14 @@ describe('Upload Submit', function () {
 
             var file = new File(fileString, 'test.jpg', {});
             dropEventManyFiles.target.files = [file];
-            window.$('body').trigger(dropEventManyFiles);
+            window.$('.js-uploader__box').trigger(dropEventManyFiles);
 
             sinon.spy(window.$, 'ajax');
 
             // trigger upload submit
             var submitUpload = window.$.Event('uploaderTestEvent');
             submitUpload.functionName = 'uploadSubmitHandler';
-            window.$('body').trigger(submitUpload);
+            window.$('.js-uploader__box').trigger(submitUpload);
             should.equal(true, window.$.ajax.calledOnce);
             window.$.ajax.restore();
         });
