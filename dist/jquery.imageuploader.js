@@ -75,6 +75,8 @@
                 // hack for being able selecting the same file name twice
                 dom.selectButton.on('click', function () { this.value = null; });
                 dom.selectButton.on('change', selectFilesHandler);
+                dom.secondarySelectButton.on('click', function () { this.value = null; });
+                dom.secondarySelectButton.on('change', selectFilesHandler);
 
                 // handle the submit click
                 dom.submitButton.on('click', uploadSubmitHandler);
