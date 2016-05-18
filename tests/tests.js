@@ -16,7 +16,7 @@ require('jquery')(window);
 window.console = console;
 
 var scriptEl = window.document.createElement('script');
-scriptEl.innerHTML = fs.readFileSync('./js/jquery.imageuploader.js', 'utf8');
+scriptEl.innerHTML = fs.readFileSync('./dist/jquery.imageuploader.js', 'utf8');
 window.document.body.appendChild(scriptEl);
 
 global.document = document;
