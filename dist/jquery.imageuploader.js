@@ -72,7 +72,6 @@
                     e.preventDefault();
                     e.stopPropagation();
                 });
-                $.event.props.push('dataTransfer'); // jquery bug hack
                 options.dropZone.on('drop', selectFilesHandler);
 
                 // hack for being able selecting the same file name twice
@@ -212,7 +211,7 @@
             }
 
             function renderControls () {
-                if (dom.fileList.children().size() !== 0) {
+                if (dom.fileList.children().length !== 0) {
                     dom.submitButton.removeClass('uploader__hide');
                     dom.furtherInstructions.removeClass('uploader__hide');
                     dom.contentsContainer.addClass('uploader__hide');
