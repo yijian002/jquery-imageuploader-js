@@ -40,25 +40,25 @@ describe('Setup', function () {
         // set up the uploader
         window.$('.js-uploader__box').uploader({testMode: true});
         it('should have the required container still', function () {
-            should.equal(1, window.$('.js-uploader__box').size());
+            should.equal(1, window.$('.js-uploader__box').length);
         });
         it('should not have the stuff that was in there at first', function () {
-            should.equal(0, window.$('.js-fallback-form').size());
+            should.equal(0, window.$('.js-fallback-form').length);
         });
     });
     describe('#dom-elements', function () {
         it('should have added one submit button', function () {
-            should.equal(1, window.$('.js-uploader__submit-button').size());
+            should.equal(1, window.$('.js-uploader__submit-button').length);
         });
         it('should have added the select button (label and input)', function () {
-            should.equal(1, window.$('.js-uploader__box .js-uploader__file-input').size());
-            should.equal(1, window.$('.js-uploader__box .js-uploader__file-label').size());
+            should.equal(1, window.$('.js-uploader__box .js-uploader__file-input').length);
+            should.equal(1, window.$('.js-uploader__box .js-uploader__file-label').length);
         });
         it('should have added further instructions', function () {
-            should.equal(1, window.$('.js-uploader__further-instructions').size());
+            should.equal(1, window.$('.js-uploader__further-instructions').length);
         });
         it('should have added the file list', function () {
-            should.equal(1, window.$('.js-uploader__file-list').size());
+            should.equal(1, window.$('.js-uploader__file-list').length);
         });
     });
 });
@@ -72,7 +72,7 @@ describe('Drag and Drop', function () {
             dropEventOneFile.target = {};
             dropEventOneFile.target.files = [new File([], 'test.jpg', {})];
             window.$('.js-uploader__box').trigger(dropEventOneFile);
-            should.equal(1, window.$('.js-uploader__file-list').children().size());
+            should.equal(1, window.$('.js-uploader__file-list').children().length);
         });
         it('should add a file list item if a bad file is dropped', function () {
             // clear the list
@@ -83,7 +83,7 @@ describe('Drag and Drop', function () {
             dropEventOneFile.target = {};
             dropEventOneFile.target.files = [new File([], 'test.csv', {})];
             window.$('.js-uploader__box').trigger(dropEventOneFile);
-            should.equal(1, window.$('.js-uploader__file-list').children().size());
+            should.equal(1, window.$('.js-uploader__file-list').children().length);
         });
         it('should add a file list item for each, if a set of good files is dropped', function () {
             window.$('.js-uploader__file-list').empty();
@@ -98,7 +98,7 @@ describe('Drag and Drop', function () {
                 new File([], 'test.jpg', {})
             ];
             window.$('.js-uploader__box').trigger(dropEventManyGoodFiles);
-            should.equal(5, window.$('.js-uploader__file-list').children().size());
+            should.equal(5, window.$('.js-uploader__file-list').children().length);
         });
         it('should add a file list item for each file, if a set of bad files is dropped', function () {
             window.$('.js-uploader__file-list').empty();
@@ -113,7 +113,7 @@ describe('Drag and Drop', function () {
                 new File([], 'test.csv', {})
             ];
             window.$('.js-uploader__box').trigger(dropEventManyBadFiles);
-            should.equal(5, window.$('.js-uploader__file-list').children().size());
+            should.equal(5, window.$('.js-uploader__file-list').children().length);
         });
         it('should add a file list item for each bad one and for each good one,  if a set of bad and good files is dropped', function () {
             window.$('.js-uploader__file-list').empty();
@@ -128,7 +128,7 @@ describe('Drag and Drop', function () {
                 new File([], 'test.jpg', {})
             ];
             window.$('.js-uploader__box').trigger(dropEventManyFiles);
-            should.equal(5, window.$('.js-uploader__file-list').children().size());
+            should.equal(5, window.$('.js-uploader__file-list').children().length);
         });
     });
 });
