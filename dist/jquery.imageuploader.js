@@ -123,13 +123,13 @@
                 var removeLink = $('<span class="uploader__file-list__button"><button class="uploader__icon-button js-upload-remove-button fa fa-times" data-index="' + id + '"></button></span>');
 
                 // validate the file
-                if (!options.isFileTypeWhite || options.fileTypeWhiteList.indexOf(getExtension(file.name).toLowerCase()) !== -1) {
+                if (options.isFileTypeWhite && options.fileTypeWhiteList.indexOf(getExtension(file.name).toLowerCase()) === -1) {
+                    // file is not ok, only add it to the dom
+                    sizeWrapper = $('<span class="uploader__file-list__size"><span class="uploader__error">' + options.badFileTypeMessage + '</span></span>');
+                } else {
                     // file is ok, add it to the batch
                     state.fileBatch.push({file: file, id: id, fileName: fileName, fileSize: fileSize});
                     sizeWrapper = $('<span class="uploader__file-list__size">' + formatBytes(fileSize) + '</span>');
-                } else {
-                    // file is not ok, only add it to the dom
-                    sizeWrapper = $('<span class="uploader__file-list__size"><span class="uploader__error">' + options.badFileTypeMessage + '</span></span>');
                 }
 
                 // create the thumbnail, if you can
