@@ -45,9 +45,14 @@ Here are the options you can set:
 | selectButtonCopy | What the primary file select button says | Select Files |
 | secondarySelectButtonCopy | What the secondary file select button says | Select More Files |
 | dropZone | The jQuery element where the uploader should listen for drop events | $('body') |
+| isFileTypeWhite |   | true|
 | fileTypeWhiteList | The whitelist of file extensions to allow to be selected (case-insensitive) | ['jpg', 'png', 'jpeg', 'gif', 'pdf']|
 | badFileTypeMessage | What the error says when someone selects a file thats not allowed because of type | Sorry, we're unable to accept this type of file. |
+| fileObjName |   | 'files'|
+| formData |   | {}|
 | ajaxUrl | The url to send the file batch to when its submitted | /ajax/upload |
+| onUploadError |   | function(errorMessage){} |
+| onQueueComplete |   | function(response){} |
 
 ## Styling the Uploader yourself
 

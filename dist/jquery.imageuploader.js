@@ -12,9 +12,14 @@
                 selectButtonCopy: 'Select Files',
                 secondarySelectButtonCopy: 'Select More Files',
                 dropZone: $(this),
+                isFileTypeWhite: true,
                 fileTypeWhiteList: ['jpg', 'png', 'jpeg', 'gif', 'pdf'],
                 badFileTypeMessage: 'Sorry, we\'re unable to accept this type of file.',
+                fileObjName: 'files',
+                formData: {},
                 ajaxUrl: '/ajax/upload',
+                onUploadError: function(){},
+                onQueueComplete: function(){},
                 testMode: false
             }, options);
 
@@ -118,7 +123,7 @@
                 var removeLink = $('<span class="uploader__file-list__button"><button class="uploader__icon-button js-upload-remove-button fa fa-times" data-index="' + id + '"></button></span>');
 
                 // validate the file
-                if (options.fileTypeWhiteList.indexOf(getExtension(file.name).toLowerCase()) !== -1) {
+                if (!options.isFileTypeWhite || options.fileTypeWhiteList.indexOf(getExtension(file.name).toLowerCase()) !== -1) {
                     // file is ok, add it to the batch
                     state.fileBatch.push({file: file, id: id, fileName: fileName, fileSize: fileSize});
                     sizeWrapper = $('<span class="uploader__file-list__size">' + formatBytes(fileSize) + '</span>');
@@ -181,7 +186,10 @@
                 if (state.fileBatch.length !== 0) {
                     var data = new FormData();
                     for (var i = 0; i < state.fileBatch.length; i++) {
-                        data.append('files[]', state.fileBatch[i].file, state.fileBatch[i].fileName);
+                        data.append(options.fileObjName + '[]', state.fileBatch[i].file, state.fileBatch[i].fileName);
+                    }
+                    for (var k in options.formData) {
+                        data.append(k, options.formData[k]);
                     }
                     $.ajax({
                         type: 'POST',
@@ -189,7 +197,13 @@
                         data: data,
                         cache: false,
                         contentType: false,
-                        processData: false
+                        processData: false,
+                        error: function(xhr, errorType, error) {
+                          options.onUploadError('系统错误 [' + xhr.status + ']');
+                        },
+                        success: function(res) {
+                          options.onQueueComplete(res);
+                        }
                     });
                 }
             }
