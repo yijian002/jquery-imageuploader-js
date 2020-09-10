@@ -50,7 +50,9 @@ Here are the options you can set:
 | badFileTypeMessage | What the error says when someone selects a file thats not allowed because of type | Sorry, we're unable to accept this type of file. |
 | fileObjName |   | 'files'|
 | formData |   | {}|
+| fileSizeLimit |   | 0 |
 | ajaxUrl | The url to send the file batch to when its submitted | /ajax/upload |
+| beforeAddFile |   | function(file) { return true; } |
 | onUploadError |   | function(errorMessage){} |
 | onQueueComplete |   | function(response){} |
 

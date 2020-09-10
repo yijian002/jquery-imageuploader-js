@@ -15,9 +15,11 @@
                 isFileTypeWhite: true,
                 fileTypeWhiteList: ['jpg', 'png', 'jpeg', 'gif', 'pdf'],
                 badFileTypeMessage: 'Sorry, we\'re unable to accept this type of file.',
+                fileSizeLimit: 0,
                 fileObjName: 'files',
                 formData: {},
                 ajaxUrl: '/ajax/upload',
+                beforeAddFile: function(file) { return true; },
                 onUploadError: function(){},
                 onQueueComplete: function(){},
                 testMode: false
@@ -48,6 +50,15 @@
                 contentsContainer: $('<div class="js-uploader__contents uploader__contents"></div>'),
                 furtherInstructions: $('<p class="js-uploader__further-instructions uploader__further-instructions uploader__hide">' + options.furtherInstructionsCopy + '</p>')
             };
+
+            var fileSizeLimit = 0;
+            if (String(options.fileSizeLimit).indexOf('MB') > 0) {
+                fileSizeLimit = options.fileSizeLimit.split('MB')[0] * 1024 * 1024;
+            } else if (String(options.fileSizeLimit).indexOf('KB') > 0) {
+                fileSizeLimit = options.fileSizeLimit.split('KB')[0] * 1024;
+            } else {
+                fileSizeLimit = options.fileSizeLimit;
+            }
 
             // empty out whatever is in there
             dom.uploaderBox.empty();
@@ -126,6 +137,8 @@
                 if (options.isFileTypeWhite && options.fileTypeWhiteList.indexOf(getExtension(file.name).toLowerCase()) === -1) {
                     // file is not ok, only add it to the dom
                     sizeWrapper = $('<span class="uploader__file-list__size"><span class="uploader__error">' + options.badFileTypeMessage + '</span></span>');
+                } else if (fileSizeLimit > 0 && fileSizeLimit < fileSize) {
+                    sizeWrapper = $('<span class="uploader__file-list__size"><span class="uploader__error">文件超出限制的'+ options.fileSizeLimit +'大小</span></span>');
                 } else {
                     // file is ok, add it to the batch
                     state.fileBatch.push({file: file, id: id, fileName: fileName, fileSize: fileSize});
@@ -218,7 +231,9 @@
 
                     // process each incoming file
                     for (var i = 0; i < files.length; i++) {
-                        addItem(files[i]);
+                        if (options.beforeAddFile(files[i])) {
+                            addItem(files[i]);
+                        }
                     }
                 }
                 renderControls();
